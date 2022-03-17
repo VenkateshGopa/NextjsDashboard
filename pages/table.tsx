@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import Pagination from "./components/Pagination";
 import Spinner from "./components/Spinner";
-import usePagination from "./components/usePagination";
+// import usePagination from "./components/usePagination";
 
 interface data {
     _id:string
