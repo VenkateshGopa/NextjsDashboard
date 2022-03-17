@@ -12,6 +12,9 @@ import {
   } from "recharts";
 import { useRouter } from "next/router";
 import Spinner from "../components/Spinner";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { getlinechart } from "../../store/actions/countrypageactions";
+import { linechart_filter } from "../../store/constants/countrypagecons";
   
 interface country {
     Continent:string
@@ -27,40 +30,44 @@ interface country {
     total_tests: number
   }
 
-const LineGraphComponent = (props:any) =>{
-    const [data, setdata] = useState<country []>([]);
-    const [data1, setdata1] = useState<country []>([]);
+const LineGraphComponent = () =>{
+    // const [data, setdata] = useState<country []>([]);
+    // const [data1, setdata1] = useState<country []>([]);
     
-    const [loading, setloading] = useState<boolean>(true);
+    // const [loading, setloading] = useState<boolean>(true);
     const router = useRouter()
     // const { iso } = router.query;
     // console.log(iso)
+    const dispatch = useDispatch()
+    const {LineChartdata:{data, data1, loading}} = useSelector((state:RootStateOrAny) => state.countrypage)
 
     useEffect(() => {
     if(!router.isReady) return;
-      setloading(true)    
-      axios.request<any>({
-          method: "GET",
-          url: `https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/covid-ovid-data/sixmonth/${router.query.iso}`,
-          headers: {
-            "x-rapidapi-host":"vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com",
-            "x-rapidapi-key":"0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561",
-          },
-        })
-        .then(function (response) {
-          setdata(response.data.reverse());
-          setdata1(response.data.reverse());
-          console.log(response.data.reverse());
-          setloading(false)
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+
+    dispatch(getlinechart(router.query.iso))
+      // setloading(true)    
+      // axios.request({
+      //     method: "GET",
+      //     url: `https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/covid-ovid-data/sixmonth/${router.query.iso}`,
+      //     headers: {
+      //       "x-rapidapi-host":"vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com",
+      //       "x-rapidapi-key":"0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561",
+      //     },
+      //   })
+      //   .then(function (response) {
+      //     setdata(response.data.reverse());
+      //     setdata1(response.data.reverse());
+      //     console.log(response.data.reverse());
+      //     setloading(false)
+      //   })
+      //   .catch(function (error) {
+      //     console.error(error);
+      //   });
     }, [router]);
     
     const setfilter = (date:string) =>{
-      const filtered = data1?.filter(item => item.date.indexOf(date)>=0);
-      setdata(filtered)
+      // const filtered = data1?.filter(item => item.date.indexOf(date)>=0);
+      dispatch({type:linechart_filter, payload:data1?.filter((item:country) => item.date.indexOf(date)>=0)})
     }
 
     return(
@@ -83,9 +90,7 @@ const LineGraphComponent = (props:any) =>{
         {!loading &&
             <ResponsiveContainer width="100%" height={250}>
             <LineChart  data={data} >
-            {/* <CartesianGrid strokeDasharray="3 3" /> */}
             <XAxis
-            // tick={{ fill: "white" }}
             dataKey="date"
             padding={{ left: 30, right: 30 }}
             style={{fontSize: '0.5rem',}}
@@ -100,7 +105,6 @@ const LineGraphComponent = (props:any) =>{
             activeDot={{ r: 8 }}
             dot={false} 
             />
-            {/* <Line type="monotone" dataKey="total_deaths" stroke="#82ca9d"  dot={false}  /> */}
         </LineChart>
         {/* #ff8ea2; */}
         </ResponsiveContainer>}

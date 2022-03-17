@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Spinner from "../components/Spinner";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { getCardchart } from "../../store/actions/countrypageactions";
+import { cardchart_select } from "../../store/constants/countrypagecons";
 
 interface states {
     Case_Fatality_Rate: number
@@ -23,33 +26,38 @@ interface states {
 }
 
 const CardsComponent = () =>{
-    const [states, setstates] = useState<states []>([]);
-    const [selstate, setselstate] = useState<any>();
-    const [loading, setloading] = useState<boolean>(true);
+    // const [states, setstates] = useState<states []>([]);
+    // const [selstate, setselstate] = useState<any>();
+    // const [loading, setloading] = useState<boolean>(true);
 
     const router = useRouter()
-    
+    const dispatch = useDispatch();
+    const {CardChartdata:{loading, states, selstate}} = useSelector((state:RootStateOrAny)=> state.countrypage)
+
     useEffect(() => {
         if(!router.isReady) return;
-          axios.request( {
-            method: 'GET',
-            url: `https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/api-covid-data/reports/${router.query.iso}`,
-            headers: {
-              'x-rapidapi-host': 'vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com',
-              'x-rapidapi-key': '0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561'
-            }
-          }).then(function (response) {
-            setstates(response.data);
-            console.log(response.data);
-            setloading(false)
-          }).catch(function (error) {
-            console.error(error);
-          });
+        dispatch(getCardchart(router.query.iso))
+
+        // const getdata = async () =>{
+        //   const response = await axios.request( {
+        //     method: 'GET',
+        //     url: `https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/api-covid-data/reports/${router.query.iso}`,
+        //     headers: {
+        //       'x-rapidapi-host': 'vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com',
+        //       'x-rapidapi-key': '0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561'
+        //     }
+        //   })
+        // setstates(response.data);
+        // console.log(response.data);
+        // setloading(false)
+        // }
+        // getdata();
       }, [router]);
     
     const changehandler = (event:any) =>{
         console.log(event.target.value)
-        setselstate(states.find( ele  => ele.province === event.target.value))
+        dispatch({type:cardchart_select, payload:states.find( (ele:states)  => ele.province === event.target.value)})
+        // setselstate(states.find( ele  => ele.province === event.target.value))
     }
     
     return(
@@ -59,7 +67,7 @@ const CardsComponent = () =>{
         <label className="text-gray-600"> Choose State: </label>
         { states.length >1 &&
         <select onChange={changehandler} className='w-2/6 dark:bg-gray-900 bg-gray-100 dark:text-slate-300 text-black'>
-            {states.map((state) => <option key={state.province} value={state.province}>{state.province}</option>)}
+            {states.map((state:states) => <option key={state.province} value={state.province}>{state.province}</option>)}
         </select>}
         </div>
 

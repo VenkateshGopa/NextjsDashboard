@@ -1,7 +1,10 @@
-import axios from 'axios';
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import { getcountries } from '../store/actions/searchactions';
+import { search } from '../store/constants/searchcons';
+// import { wrapper } from '../store/store';
 
 interface datatype{
   ThreeLetterSymbol:string
@@ -16,41 +19,36 @@ interface datatype{
 
 const Home: NextPage = () => {
   // const [global, setglobal] =  useState<global>();
-  const [data, setdata] = useState<datatype[]>([]);
-  const [data1, setdata1] = useState<datatype[]>([]);
-  const [loading, setloading] = useState<boolean>(true);
+  // const [data, setdata] = useState<datatype[]>([]);
+  // const [data1, setdata1] = useState<datatype[]>([]);
+  // const [loading, setloading] = useState<boolean>(true);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const {countries, seaarchdata} = useSelector((state:RootStateOrAny) => state.searchdata)
+
+  console.log(countries)
 
   useEffect(()=>{
-    const getdata = async() => {
-      const res= await axios.request({
-          method: 'GET',
-          url: 'https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/countries-name-ordered',
-          headers: {
-          'x-rapidapi-host': 'vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com',
-          'x-rapidapi-key': '0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561'
-          }
-      })
-      // const res2= await axios.request({
-      //   method: 'GET',
-      //   url: 'https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/world',
-      //   headers: {
-      //     'x-rapidapi-host': 'vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com',
-      //     'x-rapidapi-key': '0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561'
-      //   }
-      // })
-      // setglobal({ActiveCases: res2.data[0].ActiveCases, TotalCases:res2.data[0].TotalCases,TotalDeaths:res2.data[0].TotalDeaths,TotalRecovered:res2.data[0].TotalRecovered})
-      // console.log({ActiveCases: res2.data[0].ActiveCases, TotalCases:res2.data[0].TotalCases,TotalDeaths:res2.data[0].TotalDeaths,TotalRecovered:res2.data[0].TotalRecovered})
-      // console.log(res2.data)
-     setdata(res.data);
-     setdata1(res.data);
-  }
-  getdata();
-  setloading(false)
-  },[])
+    dispatch(getcountries())
+  //   const getdata = async() => {
+  //     const res= await axios.request({
+  //         method: 'GET',
+  //         url: 'https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/countries-name-ordered',
+  //         headers: {
+  //         'x-rapidapi-host': 'vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com',
+  //         'x-rapidapi-key': '0dcb4bd39fmshe0af6d8719d5217p172434jsn1f9be1248561'
+  //         }
+  //     })
+      
+  //    setdata(res.data);
+  //    setdata1(res.data);
+  // }
+  // getdata();
+  // setloading(false)
+  },[dispatch])
 
   const changeHandler = (event:any) =>{
-    setdata( data1.filter( ele => ele.Country.toLowerCase().indexOf(event?.target.value.toLowerCase())>=0 || ele.ThreeLetterSymbol.toLowerCase().indexOf(event?.target.value.toLowerCase())>=0 ))
+    dispatch({type:search ,payload:seaarchdata.filter((ele:datatype) => ele.Country.toLowerCase().indexOf(event?.target.value.toLowerCase())>=0 || ele.ThreeLetterSymbol.toLowerCase().indexOf(event?.target.value.toLowerCase())>=0 )})
   }
   const submithandler = (name:string , code:string) =>{
     window.localStorage.setItem('code', code)
@@ -61,16 +59,13 @@ const Home: NextPage = () => {
   return (
   <>
   <div className='home '>
-  {/* <p className='text-white'>{global?.ActiveCases} {global?.TotalCases} { global?.TotalDeaths} {global?.TotalRecovered}</p> */}
     <div className='p-5 py-12 w-11/12 bg-white dark:bg-neutral-900 m-auto sm:p-20 sm:w-3/4 lg:w-1/2 rounded shadow-xl' >
-      {/* <div> */}
-      <p className='font dark:text-white  text-black text-3xl'> Select a Country</p>
+      <p className='font dark:text-white  text-black text-3xl'> Select a Country </p>
       <input className='w-full my-10 h-8 bg-slate-200 dark:bg-neutral-700 rounded px-2 dark:text-slate-200 text-gray-900' type="text" onChange={changeHandler} placeholder="Select a Country.."/>
-      {/* </div> */}
       <p className='dark:text-gray-400 text-black text-sm pb-4'>Suggestions</p>
       <div className=''>
-      {data.length<=0 && <p className='text-black dark:text-slate-300'>No data Found</p>}
-      {data.length>0 && data.map( ele => <p onClick={() => submithandler(ele.Country, ele.ThreeLetterSymbol)} className='text-black dark:text-white hover:text-white hover:bg-black hover:cursor-pointer p-5 rounded' key={ele.Country}>{ele.Country.toUpperCase()}({ele?.ThreeLetterSymbol})</p>)}
+      {countries.length<=0 && <p className='text-black dark:text-slate-300'>No data Found</p>}
+      {countries.length>0 && countries.map( (ele:datatype) => <p onClick={() => submithandler(ele.Country, ele.ThreeLetterSymbol)} className='text-black dark:text-white hover:text-white hover:bg-black hover:cursor-pointer p-5 rounded' key={ele.Country}>{ele.Country.toUpperCase()}({ele?.ThreeLetterSymbol})</p>)}
       </div>
     </div>
   </div>
@@ -81,3 +76,7 @@ const Home: NextPage = () => {
 export default Home
 
 
+
+// export const getServerSideProps = wrapper.getServerSideProps(async({store}) =>{
+//   await store.dispatch(getcountries());
+// })

@@ -165,7 +165,9 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-
+.tableborder{
+  @apply border-2 border-collapse dark:border-white border-black  sm:text-xs md:text-sm p-1 sm:p-2;
+} 
 .nav{
   /* @apply sm:static sm:w-0 sm:h-0 sm:p-0 sm:mt-0 fixed h-screen w-3/4 bg-gray-800 top-0 left-0 flex-col p-2 mt-20; */
   @apply sm:static sm:p-0 sm:mt-0 w-1/2 h-screen sm:h-0 fixed  bg-gray-800 top-0 right-0 flex-col p-2 ;
@@ -173,7 +175,15 @@ input:checked + .slider:before {
 }
 
 @media screen and (max-width:420px) {
+  .tableborder{
+    font-size: 5px;
+  }
   .nav{
     @apply sm:static sm:p-0 sm:mt-0 w-3/4 h-screen sm:h-0 fixed  bg-slate-400 top-0 right-0 flex-col p-2 ;
+  }
+}
+@media screen and (min-width:421px) and (max-width:700px){
+  .tableborder{
+    font-size: 8px;
   }
 }

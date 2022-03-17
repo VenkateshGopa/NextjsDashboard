@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Legend, Tooltip , ResponsiveContainer} from "recharts";
+import { PieChart, Pie, Cell, Legend, Tooltip , ResponsiveContainer, Label} from "recharts";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Spinner from "../components/Spinner";
 
 
-const COLORS = ["#fef08a", "#f87171", "#86efac"];
-
+const COLORS = ["#facc15", "#f87171", "#22c55e"];
 interface chartdata {
     name:string
     value:number
 }
 
-// interface datatype{
-//     ThreeLetterSymbol:string
-//     Country:string
-// }
+
 export default function PieCharts() {
-    // const [states, setstates] = useState<datatype []>([]);
     const [data, setdata] = useState<chartdata []>([]);
     const [loading, setloading] = useState<boolean>(true);
 
