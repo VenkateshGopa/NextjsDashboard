@@ -46,87 +46,87 @@ interface urlreq {
 }
 
 const Table:NextPage = () => {
-    const {data,loading,show,url,req,reqs,inputhandler,clearfilter,showhandler,checkhand} = usePagination('https://covidpagination.herokuapp.com/country');
+    // const {data,loading,show,url,req,reqs,inputhandler,clearfilter,showhandler,checkhand} = usePagination('git /country');
 
-    // const [data, setdata] = useState<pagnination>();
-    // const [loading, setloading] = useState<boolean>(true);
-    // const [show, setshow] = useState<boolean>(false);
-    // const [url, seturl] = useState<urlreq>({page:1,pagesize:10,sort:'Select',sorttype:true,filter:'Select', min:-1, max:-1, submit:false})
+    const [data, setdata] = useState<pagnination>();
+    const [loading, setloading] = useState<boolean>(true);
+    const [show, setshow] = useState<boolean>(false);
+    const [url, seturl] = useState<urlreq>({page:1,pagesize:10,sort:'Select',sorttype:true,filter:'Select', min:-1, max:-1, submit:false})
 
 
-    // useEffect( () =>{
-    //     setloading(true)
-    //     axios.get('http://localhost:3001/country?page=1&pagesize=10').then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    // },[])
+    useEffect( () =>{
+        setloading(true)
+        axios.get('https://covidpagination.herokuapp.com/country?page=1&pagesize=10').then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+    },[])
 
-    // const req = (type:string|number) =>{
-    //     setloading(true)
+    const req = (type:string|number) =>{
+        setloading(true)
         
-    //     if(typeof type === "string"){
-    //         if(type === 'p'){ 
-    //           seturl((prev) => { return{...prev , page:prev.page-1}})
-    //           axios.get(urltype(url.page-1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    //         }
-    //         else{
-    //             seturl((prev) => { return{...prev , page:prev.page+1}})
-    //             axios.get(urltype(url.page+1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    //         }
-    //     }
-    //     else{
-    //         seturl((prev) => { return{...prev , page:type}})
-    //         console.log(urltype(type, url.pagesize))
-    //         axios.get(urltype(type, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    //     }
-    // }
+        if(typeof type === "string"){
+            if(type === 'p'){ 
+              seturl((prev) => { return{...prev , page:prev.page-1}})
+              axios.get(urltype(url.page-1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+            }
+            else{
+                seturl((prev) => { return{...prev , page:prev.page+1}})
+                axios.get(urltype(url.page+1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+            }
+        }
+        else{
+            seturl((prev) => { return{...prev , page:type}})
+            console.log(urltype(type, url.pagesize))
+            axios.get(urltype(type, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+        }
+    }
 
 
-    // const reqs = () =>{
-    //     setloading(true)
-    //     seturl((prev) => { return{...prev , page:1, submit:true}})
-    //     axios.get(urltype(1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    //     setshow(false)
-    // }
+    const reqs = () =>{
+        setloading(true)
+        seturl((prev) => { return{...prev , page:1, submit:true}})
+        axios.get(urltype(1, url.pagesize)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+        setshow(false)
+    }
 
-    // const urltype = (page:number , pagesize:number) =>{
+    const urltype = (page:number , pagesize:number) =>{
 
-    //     if (url.sort !== "Select" && url.filter !== "Select" && (url.min < url.max) && (url.max!== -1 || url.min!== -1))
-    //     return `http://localhost:3001/country?page=${page}&pagesize=${pagesize}&sort=${url.sort}:${url.sorttype ? 'asc' : 'desc'}&filter=${url.filter}:gt-${url.min},${url.filter}:lt-${url.max} `
+        if (url.sort !== "Select" && url.filter !== "Select" && (url.min < url.max) && (url.max!== -1 || url.min!== -1))
+        return `https://covidpagination.herokuapp.com/country?page=${page}&pagesize=${pagesize}&sort=${url.sort}:${url.sorttype ? 'asc' : 'desc'}&filter=${url.filter}:gt-${url.min},${url.filter}:lt-${url.max} `
 
-    //     else if (url.sort !== "Select")
-    //     return `http://localhost:3001/country?page=${page}&pagesize=${pagesize}&sort=${url.sort}:${url.sorttype ? 'asc' : 'desc'}`
+        else if (url.sort !== "Select")
+        return `https://covidpagination.herokuapp.com/country?page=${page}&pagesize=${pagesize}&sort=${url.sort}:${url.sorttype ? 'asc' : 'desc'}`
 
-    //     else if (url.filter !== "Select" && (url.min < url.max) && (url.max!== -1 || url.min!== -1) )
-    //     return `http://localhost:3001/country?page=${page}&pagesize=${pagesize}&filter=${url.filter}:gt-${url.min},${url.filter}:lt-${url.max}`
+        else if (url.filter !== "Select" && (url.min < url.max) && (url.max!== -1 || url.min!== -1) )
+        return `https://covidpagination.herokuapp.com/country?page=${page}&pagesize=${pagesize}&filter=${url.filter}:gt-${url.min},${url.filter}:lt-${url.max}`
 
-    //     return `http://localhost:3001/country?page=${page}&pagesize=${pagesize}`
+        return `https://covidpagination.herokuapp.com/country?page=${page}&pagesize=${pagesize}`
 
-    // }
+    }
 
-    // const inputhandler = (event:any) =>{
-    //     if(event.target.name === 'min' || event.target.name==='max')
-    //     seturl((prev) => { return{...prev , [event.target.name]: +event.target.value }})
+    const inputhandler = (event:any) =>{
+        if(event.target.name === 'min' || event.target.name==='max')
+        seturl((prev) => { return{...prev , [event.target.name]: +event.target.value }})
 
-    //     else if(event.target.name==='pagesize'){
-    //     seturl((prev) => { return{...prev , [event.target.name]: event.target.value }})
-    //     axios.get(urltype(1, event.target.value)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    //     }
+        else if(event.target.name==='pagesize'){
+        seturl((prev) => { return{...prev , [event.target.name]: event.target.value }})
+        axios.get(urltype(1, event.target.value)).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+        }
 
-    //     else
-    //     seturl((prev) => { return{...prev , [event.target.name]: event.target.value}})
-    // }
+        else
+        seturl((prev) => { return{...prev , [event.target.name]: event.target.value}})
+    }
 
-    // const clearfilter = () =>{
-    //     seturl((prev) =>{ return {...prev , sort:"Select",sorttype:true,filter:"Select",min:-1, max:-1, page:1 , pagesize:10 , submit:false}})
-    //     axios.get(`http://localhost:3001/country?page=1&pagesize=10`).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
-    // }
+    const clearfilter = () =>{
+        seturl((prev) =>{ return {...prev , sort:"Select",sorttype:true,filter:"Select",min:-1, max:-1, page:1 , pagesize:10 , submit:false}})
+        axios.get(`https://covidpagination.herokuapp.com/country?page=1&pagesize=10`).then((response) => {setdata(response.data) ; setloading(false) }).catch((error) => console.log(error))
+    }
 
-    // const showhandler = () =>{
-    //     setshow((prev) => !prev)
-    // }
+    const showhandler = () =>{
+        setshow((prev) => !prev)
+    }
     
-    // const checkhand = (event:any) =>{
-    //     seturl((prev) => { return{...prev , sorttype: event.target.value!=='desc'}})
-    // }
+    const checkhand = (event:any) =>{
+        seturl((prev) => { return{...prev , sorttype: event.target.value!=='desc'}})
+    }
 
   return (
     <div className="mt-36">
